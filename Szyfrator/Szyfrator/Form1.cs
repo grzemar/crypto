@@ -68,7 +68,7 @@ namespace Szyfrator
             dialog1.InitialDirectory = @"C:\";
             if (dialog1.ShowDialog() == DialogResult.OK)
             {
-                cryptor.GetOpts().SetFile(dialog1.FileName);
+                cryptor.GetOpts().File = dialog1.FileName;
                 label12.Text = dialog1.FileName;
             }
         }
@@ -77,26 +77,26 @@ namespace Szyfrator
         {
             switch(listBox3.SelectedIndex)
             {
-                case 0: cryptor.GetOpts().SetSubBlockSize(8);
+                case 0: cryptor.GetOpts().SubBlockSize = 8;
                     break;
-                case 1: cryptor.GetOpts().SetSubBlockSize(16);
+                case 1: cryptor.GetOpts().SubBlockSize = 16;
                     break;
-                case 2: cryptor.GetOpts().SetSubBlockSize(32);
+                case 2: cryptor.GetOpts().SubBlockSize = 32;
                     break;
-                case 3: cryptor.GetOpts().SetSubBlockSize(64);
+                case 3: cryptor.GetOpts().SubBlockSize = 64;
                     break;
-                default: cryptor.GetOpts().SetSubBlockSize(64);
+                default: cryptor.GetOpts().SubBlockSize = 64;
                     break;
             }
-            cryptor.GetOpts().SetMode(listBox2.SelectedIndex);
-            cryptor.GetOpts().SetForEncryption(true);
+            cryptor.GetOpts().Mode =listBox2.SelectedIndex;
+            cryptor.GetOpts().ForEncryption = true;
 
-            if (listBox1.SelectedIndex == 0) cryptor.GetOpts().SetKeySize(128);
-            if (listBox1.SelectedIndex == 1) cryptor.GetOpts().SetKeySize(192);
-            if (listBox1.SelectedIndex == 2) cryptor.GetOpts().SetKeySize(256);
-            cryptor.GetOpts().SetMode(listBox2.SelectedIndex);
+            if (listBox1.SelectedIndex == 0) cryptor.GetOpts().KeySize = 128;
+            if (listBox1.SelectedIndex == 1) cryptor.GetOpts().KeySize = 192;
+            if (listBox1.SelectedIndex == 2) cryptor.GetOpts().KeySize = 256;
+            cryptor.GetOpts().Mode = listBox2.SelectedIndex;
 
-            cryptor.GetOpts().SetContent(ReadByteArrayFromFile(cryptor.GetOpts().GetFile()));
+            cryptor.GetOpts().Content = ReadByteArrayFromFile(cryptor.GetOpts().File);
             for (int kk = 0; kk < lines; kk++)
             {
                 if (checkedListBox1.GetItemChecked(kk))
@@ -107,9 +107,9 @@ namespace Szyfrator
             SaveFileDialog dialog2 = new SaveFileDialog();
             dialog2.Title = "Wskaż lokalizację zaszyfrowanego pliku";
             dialog2.InitialDirectory = @"C:\";
-            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().GetFile())))
+            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().File)))
             {
-                int j = cryptor.GetOpts().GetMode();
+                int j = cryptor.GetOpts().Mode;
                 string str = "";
                 switch(j)
                 {
@@ -123,10 +123,10 @@ namespace Szyfrator
                             break;
                     default: break;
                 }
-                cryptor.GetOpts().SetSessionKey(cryptor.GenerateSessionKey(cryptor.GetOpts().GetKeySize()));
+                cryptor.GetOpts().SessionKey = cryptor.GenerateSessionKey(cryptor.GetOpts().KeySize);
                 cryptor.Encrypt();
 
-                byte[] initVec = cryptor.GetOpts().GetInitialVector();
+                byte[] initVec = cryptor.GetOpts().InitialVector;
 
                 using (XmlWriter writer = XmlWriter.Create(dialog2.FileName))
                 {
@@ -136,27 +136,25 @@ namespace Szyfrator
                     writer.WriteStartElement("EncryptedFileHeader");
 
                     writer.WriteElementString("Algorithm","RC6");
-                    writer.WriteElementString("KeySize", cryptor.GetOpts().GetKeySize().ToString());
-                    //writer.WriteElementString("BlockSize", cryptor.GetOpts().GetBlockSize().ToString());
-                    if (j>1) writer.WriteElementString("SubBlockSize", cryptor.GetOpts().GetSubBlockSize().ToString());
+                    writer.WriteElementString("KeySize", cryptor.GetOpts().KeySize.ToString());
+                    if (j>1) writer.WriteElementString("SubBlockSize", cryptor.GetOpts().SubBlockSize.ToString());
                     writer.WriteElementString("CipherMode", str);
                     writer.WriteElementString("IV", Convert.ToBase64String(initVec));
 
                     writer.WriteStartElement("ApprovedUsers");
 
-                    for (int i = 0; i < cryptor.GetOpts().GetUsersNumber(); i++)
+                    foreach (User u in cryptor.GetOpts().Users)
                     {
                         writer.WriteStartElement("User");
-                        writer.WriteElementString("Name",cryptor.GetOpts().GetUsers()[i]);
-                        //writer.WriteElementString("SessionKey", Convert.ToBase64String(cryptor.GetOpts().GetSessionKey()));
-                        string pubpath = cryptor.GetOpts().GetPublicKeys()[i];
+                        writer.WriteElementString("Name",u.Name);
+                        string pubpath = u.PublicKeyPath;
 
                         using (StreamReader reader = new StreamReader(pubpath))
                         {
                             String elo = reader.ReadToEnd();
                             byte[] publicKey = Convert.FromBase64String(elo);
                             RsaKeyParameters pubKey = (RsaKeyParameters)PublicKeyFactory.CreateKey(publicKey);
-                            byte[] encSessionKey = cryptor.RsaEncrypt(cryptor.GetOpts().GetSessionKey(), pubKey);
+                            byte[] encSessionKey = cryptor.RsaEncrypt(cryptor.GetOpts().SessionKey, pubKey);
                             writer.WriteElementString("SessionKey", Convert.ToBase64String(encSessionKey));
          
                         }
@@ -169,7 +167,7 @@ namespace Szyfrator
 
                     writer.WriteStartElement("Content");
          
-                    writer.WriteString(Convert.ToBase64String(cryptor.GetOpts().GetEncryptedContent()));
+                    writer.WriteString(Convert.ToBase64String(cryptor.GetOpts().EncryptedContent));
         
                     writer.WriteEndElement();
 
@@ -188,25 +186,25 @@ namespace Szyfrator
             dialog1.InitialDirectory = @"C:\";
             if (dialog1.ShowDialog() == DialogResult.OK)
             {
-                cryptor.GetOpts().SetFile(dialog1.FileName);
+                cryptor.GetOpts().File = dialog1.FileName;
                 label13.Text = dialog1.FileName;
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            cryptor.GetOpts().SetForEncryption(false);
-            cryptor.GetOpts().SetPassword(textBox4.Text);
+            cryptor.GetOpts().ForEncryption = false;
+            cryptor.GetOpts().Password = textBox4.Text;
             string password = textBox4.Text;
             SaveFileDialog dialog2 = new SaveFileDialog();
             dialog2.Title = "Wskaż lokalizację odszyfrowanego pliku";
             dialog2.InitialDirectory = @"C:\";
-            cryptor.GetOpts().SetUsersNumber(0);
+            cryptor.GetOpts().Users = new List<User>();
             int kk = listBox4.SelectedIndex;
             cryptor.GetOpts().AddUser(names[kk], publicKeyPath[kk], privateKeyPath[kk]);
-            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().GetFile())))
+            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().File)))
             {
-                using (XmlReader reader = XmlReader.Create(cryptor.GetOpts().GetFile()))
+                using (XmlReader reader = XmlReader.Create(cryptor.GetOpts().File))
                 {
                     reader.ReadStartElement("EncryptedFile");
                     reader.ReadStartElement("EncryptedFileHeader");
@@ -216,14 +214,14 @@ namespace Szyfrator
                     reader.ReadEndElement();
                     reader.ReadStartElement("KeySize");
                     string z = reader.ReadString();
-                    cryptor.GetOpts().SetKeySize(Convert.ToInt32(z));
+                    cryptor.GetOpts().KeySize = Convert.ToInt32(z);
                     reader.ReadEndElement();
 
                     try
                     {
                         reader.ReadStartElement("SubBlockSize");
                         z = reader.ReadString();
-                        cryptor.GetOpts().SetSubBlockSize(Convert.ToInt32(z));
+                        cryptor.GetOpts().SubBlockSize = Convert.ToInt32(z);
                         reader.ReadEndElement();
                     }
                     catch (Exception ee)
@@ -236,20 +234,20 @@ namespace Szyfrator
                     if ((String.Compare(z, "CBC")) == 0) i = 1;
                     if ((String.Compare(z, "CFB")) == 0) i = 2;
                     if ((String.Compare(z, "OFB")) == 0) i = 3;
-                    cryptor.GetOpts().SetMode(i);
+                    cryptor.GetOpts().Mode = i;
 
                     reader.ReadEndElement();
 
                     reader.ReadStartElement("IV");
                     z = reader.ReadString();
-                    cryptor.GetOpts().SetInitialVector(Convert.FromBase64String(z));
+                    cryptor.GetOpts().InitialVector = Convert.FromBase64String(z);
                     reader.ReadEndElement();
 
                     reader.ReadStartElement("ApprovedUsers");
-                    String stri = cryptor.GetOpts().GetUsers()[0];
+                    String stri = cryptor.GetOpts().Users[0].Name;
                     int ggg = 1;
                     int setIt = 0;
-                    cryptor.GetOpts().SetSessionKey(cryptor.GenerateSessionKey(cryptor.GetOpts().GetKeySize()));
+                    cryptor.GetOpts().SessionKey = cryptor.GenerateSessionKey(cryptor.GetOpts().KeySize);
                     while (ggg == 1)
                     {
                         try
@@ -267,7 +265,7 @@ namespace Szyfrator
                             if (setIt == 1)
                             {
                                 setIt = 0;
-                                string privpath = cryptor.GetOpts().GetPrivateKeys()[0];
+                                string privpath = cryptor.GetOpts().Users[0].PrivateKeyPath;
                                 using (XmlReader readerTwo = XmlReader.Create(privpath))
                                 {
                                     readerTwo.ReadStartElement("EncryptedPrivateKey");
@@ -276,24 +274,24 @@ namespace Szyfrator
 
                                     byte[] encPrivKey = Convert.FromBase64String(privKey);
                                     Options optss = new Options();
-                                    optss.SetKeySize(256);
-                                    optss.SetMode(0);
-                                    optss.SetBlockSize(128);
-                                    optss.SetEncryptedContent(encPrivKey);
-                                    optss.SetForEncryption(false);
+                                    optss.KeySize = 256;
+                                    optss.Mode = 0;
+                                    optss.BlockSize = 128;
+                                    optss.EncryptedContent = encPrivKey;
+                                    optss.ForEncryption = false;
 
                                     byte[] pass = System.Text.UTF8Encoding.UTF8.GetBytes(password);
-                                    optss.SetSessionKey(cryptor.GenerateKeyFromPassword(pass));
+                                    optss.SessionKey = cryptor.GenerateKeyFromPassword(pass);
                                     Crypt crypter = new Crypt(optss);
                                     crypter.Decrypt();
                                     try
                                     {
                                         RsaKeyParameters privateKey =
-                                            (RsaKeyParameters)PrivateKeyFactory.CreateKey(crypter.GetOpts().GetContent());
+                                            (RsaKeyParameters)PrivateKeyFactory.CreateKey(crypter.GetOpts().Content);
 
                                         byte[] encrCont = Convert.FromBase64String(z);
                                         byte[] sessionKey = cryptor.RsaDecrypt(encrCont, privateKey);
-                                        cryptor.GetOpts().SetSessionKey(sessionKey);
+                                        cryptor.GetOpts().SessionKey = sessionKey;
                                     }
                                     catch (Exception eee) { }
                                 }
@@ -314,13 +312,13 @@ namespace Szyfrator
                     reader.ReadStartElement("Content");
                     z = reader.ReadString();
 
-                    cryptor.GetOpts().SetEncryptedContent(Convert.FromBase64String(z));
+                    cryptor.GetOpts().EncryptedContent = Convert.FromBase64String(z);
                     reader.ReadEndElement();
 
                     reader.ReadEndElement();
 
                     cryptor.Decrypt();
-                    bool enc = WriteByteArrayToFile(cryptor.GetOpts().GetContent(), dialog2.FileName);
+                    bool enc = WriteByteArrayToFile(cryptor.GetOpts().Content, dialog2.FileName);
                     MessageBox.Show("Odszyfrowano plik.");
                 }
             }
@@ -330,10 +328,12 @@ namespace Szyfrator
         public byte[] ReadByteArrayFromFile(string fileName)
         {
             byte[] buff = null;
-            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            BinaryReader br = new BinaryReader(fs);
-            long numBytes = new FileInfo(fileName).Length;
-            buff = br.ReadBytes((int)numBytes);
+            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                BinaryReader br = new BinaryReader(fs);
+                long numBytes = new FileInfo(fileName).Length;
+                buff = br.ReadBytes((int)numBytes);
+            }
             return buff;
         }
 
@@ -343,11 +343,14 @@ namespace Szyfrator
 
             try
             {
-                FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite);
-                BinaryWriter bw = new BinaryWriter(fs);
-                bw.Write(buff);
-                bw.Close();
-                response = true;
+                using (
+                FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    BinaryWriter bw = new BinaryWriter(fs);
+                    bw.Write(buff);
+                    bw.Close();
+                    response = true;
+                }
             }
             catch (Exception ex)
             {
@@ -405,23 +408,33 @@ namespace Szyfrator
                 PrivateKeyInfo privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(key);
         	    byte[] serializedPrivateBytes = privateKeyInfo.ToAsn1Object().GetDerEncoded(); 
                 Options optss = new Options();
-                optss.SetKeySize(256);
-                optss.SetMode(0);
-                optss.SetBlockSize(128);
-                optss.SetContent(serializedPrivateBytes);
-                optss.SetForEncryption(true);
+                optss.KeySize = 256;
+                optss.Mode = 0;
+                optss.BlockSize = 128;
+                optss.Content = serializedPrivateBytes;
+                optss.ForEncryption = true;
                 byte[] pass = System.Text.UTF8Encoding.UTF8.GetBytes(password);
-                optss.SetSessionKey(cryptor.GenerateKeyFromPassword(pass));
+                optss.SessionKey = cryptor.GenerateKeyFromPassword(pass);
                 Crypt crypter = new Crypt(optss);
                 crypter.Encrypt();
 
 
                 writer.WriteStartDocument();
                 writer.WriteStartElement("EncryptedPrivateKey");
-                //writer.WriteString(Convert.ToBase64String(serializedPrivateBytes));
-                writer.WriteString(Convert.ToBase64String(crypter.GetOpts().GetEncryptedContent()));
+                writer.WriteString(Convert.ToBase64String(crypter.GetOpts().EncryptedContent));
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+            }
+
+            using (StreamWriter writer = new StreamWriter("Resources\\keys.csv", true))
+            {
+                writer.Write(names[lines - 1]);
+                writer.Write(";");
+                writer.Write(publicKeyPath[lines - 1]);
+                writer.Write(";");
+                writer.Write(privateKeyPath[lines - 1]);
+                writer.WriteLine();
+                writer.Close();
             }
             MessageBox.Show("Utworzono parę kluczy RSA");
         }

@@ -8,218 +8,56 @@ namespace Szyfrator
 {
     public class Options
     {
-        private bool forEncryption = true;
+        public bool ForEncryption { get; set;}
 
-        private String file = "";
+        public String File { get; set; }
 
-        private String password = "";
+        public String Password { get; set; }
 
-        private int mode = 0;
+        public int Mode { get; set; }
 
-        private int keySize = 128;
+        public int KeySize { get; set; }
 
-        private int blockSize = 128;
+        public int BlockSize { get; set; }
 
-        private int subBlockSize = 1;
+        public int SubBlockSize { get; set; }
 
-        private bool storeFileName = true;
+        public String StoredFileName { get; set; }
 
-        private String storedFileName = "";
+        public byte[] InitialVector { get; set; }
 
-        private byte[] initialVector;
+        public byte[] SessionKey { get; set; }
 
-        private byte[] sessionKey;
+        public byte[] EncryptedSessionKey { get; set; }
 
-        private byte[] encryptedSessionKey;
+        public byte[] Content { get; set; }
 
-        private byte[] content;
+        public byte[] EncryptedContent { get; set; }
 
-        private byte[] encryptedContent;
-
-        private String[] users = new String[50];
-
-        private string[] publicPath = new string[50];
-
-        private string[] privatePath = new string[50];
-
-        private int usersNumber = 0;
+        public List<User> Users { get; set; }
 
         public Options()
         {
+            Users = new List<User>();
+            ForEncryption = true;
+            Password = null;
+            File = null;
+            Mode = 0;
+            KeySize = 128;
+            BlockSize = 128;
+            SubBlockSize = 8;
+            StoredFileName = null;
+            InitialVector = null;
+            EncryptedContent = null;
+            SessionKey = null;
+            EncryptedSessionKey = null;
+            Content = null;
         }
 
-        public bool IsForEncryption()
+        public void AddUser(string name, string pubPath, string privPath)
         {
-            return forEncryption;
+            Users.Add(new User(name,pubPath,privPath));
         }
 
-        public void SetForEncryption(bool forEncryption)
-        {
-            this.forEncryption = forEncryption;
-        }
-
-        public int GetBlockSize()
-        {
-            return blockSize;
-        }
-
-        public void SetBlockSize(int blockSize)
-        {
-            this.blockSize = blockSize;
-        }
-
-        public byte[] GetContent()
-        {
-            return content;
-        }
-
-        public void SetContent(byte[] content)
-        {
-            this.content = content;
-        }
-
-        public byte[] GetEncryptedContent()
-        {
-            return encryptedContent;
-        }
-
-        public void SetEncryptedContent(byte[] encryptedContent)
-        {
-            this.encryptedContent = encryptedContent;
-        }
-
-        public byte[] GetEncryptedSessionKey()
-        {
-            return encryptedSessionKey;
-        }
-
-        public void SetEncryptedSessionKey(byte[] encryptedSessionKey)
-        {
-            this.encryptedSessionKey = encryptedSessionKey;
-        }
-
-        public String GetFile()
-        {
-            return file;
-        }
-
-        public void SetFile(String file)
-        {
-            this.file = file;
-        }
-
-        public byte[] GetInitialVector()
-        {
-            return initialVector;
-        }
-
-        public void SetInitialVector(byte[] initialVector)
-        {
-            this.initialVector = initialVector;
-        }
-
-        public int GetKeySize()
-        {
-            return keySize;
-        }
-
-        public void SetKeySize(int keySize)
-        {
-            this.keySize = keySize;
-        }
-
-        public int GetMode()
-        {
-            return mode;
-        }
-
-        public void SetMode(int mode)
-        {
-            this.mode = mode;
-        }
-
-        public String GetPassword()
-        {
-            return password;
-        }
-
-        public void SetPassword(String password)
-        {
-            this.password = password;
-        }
-
-        public byte[] GetSessionKey()
-        {
-            return sessionKey;
-        }
-
-        public void SetSessionKey(byte[] sessionKey)
-        {
-            this.sessionKey = sessionKey;
-        }
-
-        public bool IsStoreFileName()
-        {
-            return storeFileName;
-           
-        }
-
-        public void SetStoreFileName(bool storeFileName)
-        {
-            this.storeFileName = storeFileName;
-        }
-
-        public int GetSubBlockSize()
-        {
-            return subBlockSize;
-        }
-
-        public void SetSubBlockSize(int subBlockSize)
-        {
-            this.subBlockSize = subBlockSize;
-        }
-
-        private void SetStoredFileName(String fileName)
-        {
-            this.storedFileName = fileName;
-        }
-
-        public String GetStoredFileName()
-        {
-            return storedFileName;
-        }
-
-        public int GetUsersNumber()
-        {
-            return usersNumber;
-        }
-
-        public void SetUsersNumber(int i)
-        {
-            usersNumber = i;
-        }
-
-        public void AddUser(String added, string pubPath, string privPath)
-        {
-            users[usersNumber] = added;
-            publicPath[usersNumber] = pubPath;
-            privatePath[usersNumber] = privPath;
-            usersNumber++;
-        }
-
-        public String[] GetUsers()
-        {
-            return users;
-        }
-
-        public string[] GetPublicKeys()
-        {
-            return publicPath;
-        }
-
-        public string[] GetPrivateKeys()
-        {
-            return privatePath;
-        }
     }
 }

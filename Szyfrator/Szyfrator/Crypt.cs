@@ -29,20 +29,19 @@ namespace Szyfrator
 
         public void Encrypt()
         {
-            //opts.SetSessionKey(GenerateSessionKey(opts.GetKeySize()));
-            opts.SetInitialVector(GenerateInitialVector());
+            opts.InitialVector = GenerateInitialVector();
             byte[] output;
             try
             {
                 BufferedBlockCipher cipher = PrepareCipher(true);
-                output = ProcessCipher(cipher, opts.GetContent());
+                output = ProcessCipher(cipher, opts.Content);
             }
             catch (InvalidCipherTextException e)
             {
                 BufferedBlockCipher cipher = PrepareCipher(false);
-                output = ProcessCipher(cipher, opts.GetContent());
+                output = ProcessCipher(cipher, opts.Content);
             }
-            opts.SetEncryptedContent(output);
+            opts.EncryptedContent = output;
         }
 
         public void Decrypt()
@@ -51,15 +50,14 @@ namespace Szyfrator
 		    try 
             {
 			    BufferedBlockCipher cipher = PrepareCipher(true);
-			    output = ProcessCipher(cipher, opts.GetEncryptedContent());
+			    output = ProcessCipher(cipher, opts.EncryptedContent);
 		    } 
             catch (InvalidCipherTextException e) 
             {
-			    // Assuming no use of PKCS
 			    BufferedBlockCipher cipher = PrepareCipher(false);
-			    output = ProcessCipher(cipher, opts.GetEncryptedContent());
+			    output = ProcessCipher(cipher, opts.EncryptedContent);
 		    }
-            opts.SetContent(output);
+            opts.Content = output;
         }
 
         public AsymmetricCipherKeyPair GenerateKeys(int keySizeInBits)
@@ -69,6 +67,14 @@ namespace Szyfrator
 	        AsymmetricCipherKeyPair keys = r.GenerateKeyPair();
 	        return keys;
 	    }
+
+        public byte[] GenerateSessionKey(int keySize)
+        {
+            CipherKeyGenerator keyGen = GeneratorUtilities.GetKeyGenerator("RC6");
+            keyGen.Init(new KeyGenerationParameters(new SecureRandom(), keySize));
+            return keyGen.GenerateKey();
+        }
+
 
         public byte[] RsaEncrypt(byte[] data, AsymmetricKeyParameter key)
         {
@@ -82,12 +88,6 @@ namespace Szyfrator
                 int chunkSize = Math.Min(blockSize, data.Length - (chunkPosition * blockSize));
                 output.AddRange(e.ProcessBlock(data, chunkPosition,chunkSize));
             }
-            /*byte[] outByte = new byte[data.Length];
-            for (int i = 0; i < outByte.Length; i++)
-            {
-                outByte[i] = output.ElementAt(i);
-            }
-            return outByte;*/
             return output.ToArray();
         }
 
@@ -103,28 +103,15 @@ namespace Szyfrator
                 int chunkSize = Math.Min(blockSize, data.Length - (chunkPosition * blockSize));
                 output.AddRange(e.ProcessBlock(data, chunkPosition, chunkSize));
             }
-            /*byte[] outByte = new byte[data.Length];
-            for (int i = 0; i < outByte.Length; i++)
-            {
-                outByte[i] = output.ElementAt(i);
-            }
-            return outByte;*/
             return output.ToArray();
         }
 
 
-        public byte[] GenerateSessionKey(int keySize)
-        {
-            CipherKeyGenerator keyGen = GeneratorUtilities.GetKeyGenerator("RC6");
-		    keyGen.Init(new KeyGenerationParameters(new SecureRandom(),keySize));
-            return keyGen.GenerateKey();
-	    }
-
+    
 	    public byte[] GenerateInitialVector() 
         {
-		    // initial vector equals block size
 		    Random random = new SecureRandom();
-		    byte[] iv = new byte[opts.GetBlockSize()/8];
+		    byte[] iv = new byte[opts.BlockSize/8];
 		    random.NextBytes(iv);
 		    return iv;
 	    }
@@ -135,16 +122,14 @@ namespace Szyfrator
             digester.BlockUpdate(password, 0, password.Length);
             byte[] result = new byte[digester.GetDigestSize()];
             digester.DoFinal(result, 0);
-
             return result;
-
         }
 
         public BufferedBlockCipher PrepareCipher(bool padded)
         {
             IBlockCipher engine = new RC6Engine();
 		    IBlockCipher mode;
-		    switch (opts.GetMode()) 
+		    switch (opts.Mode) 
             {
 			    case 0:
 				    mode = engine;
@@ -153,10 +138,10 @@ namespace Szyfrator
 				    mode = new CbcBlockCipher(engine);
 				    break;
 			    case 2:
-				    mode = new CfbBlockCipher(engine, opts.GetSubBlockSize());
+				    mode = new CfbBlockCipher(engine, opts.SubBlockSize);
 				    break;
 			    case 3:
-				    mode = new OfbBlockCipher(engine, opts.GetSubBlockSize());
+				    mode = new OfbBlockCipher(engine, opts.SubBlockSize);
 				    break;
 			    default:
 				    mode = engine;
@@ -173,15 +158,15 @@ namespace Szyfrator
 			    cipher = new BufferedBlockCipher(mode);
 		    }
 
-		    KeyParameter keyParameter = new KeyParameter(opts.GetSessionKey());
-		    if (opts.GetMode() == 0) 
+		    KeyParameter keyParameter = new KeyParameter(opts.SessionKey);
+		    if (opts.Mode == 0) 
             {
-			    cipher.Init(opts.IsForEncryption(), keyParameter);
+			    cipher.Init(opts.ForEncryption, keyParameter);
 		    } 
             else 
             {
-			    ParametersWithIV keyAndIVParameter = new ParametersWithIV(keyParameter, opts.GetInitialVector());
-			    cipher.Init(opts.IsForEncryption(), keyAndIVParameter);
+			    ParametersWithIV keyAndIVParameter = new ParametersWithIV(keyParameter, opts.InitialVector);
+			    cipher.Init(opts.ForEncryption, keyAndIVParameter);
 		    }
 
 		    return cipher;
@@ -200,8 +185,6 @@ namespace Szyfrator
 		    }
 
 		    return output;
-
         }
-
     }
 }
