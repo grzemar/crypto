@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 
 namespace Szyfrator
@@ -16,6 +17,13 @@ namespace Szyfrator
             Name = name;
             PublicKeyPath = publickeypath;
             PrivateKeyPath = privatekeypath;
+        }
+
+        public bool IsValid()
+        {
+            if (!File.Exists(PublicKeyPath)) return false;
+            if (!File.Exists(PrivateKeyPath)) return false;
+            return true;
         }
     }
 }

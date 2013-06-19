@@ -22,9 +22,8 @@ namespace Szyfrator
 {
     public partial class Form1 : Form
     {
-        private Options opts;
         private Crypt cryptor;
-        private string config;
+        private const string config = "Resources\\keys.csv";
         private string[] names = new string[50];
         private string[] publicKeyPath = new string[50];
         private string[] privateKeyPath = new string[50];
@@ -34,9 +33,8 @@ namespace Szyfrator
         public Form1()
         {
             InitializeComponent();
-            opts = new Options();
+            CryptOptions opts = new CryptOptions();
             cryptor = new Crypt(opts);
-            config = "Resources\\keys.csv";
             try
             {
                 using (StreamReader readFile = new StreamReader(config))
@@ -55,7 +53,7 @@ namespace Szyfrator
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 MessageBox.Show("Program encountered errors while trying to read config file");
             }
@@ -68,7 +66,7 @@ namespace Szyfrator
             dialog1.InitialDirectory = @"C:\";
             if (dialog1.ShowDialog() == DialogResult.OK)
             {
-                cryptor.GetOpts().File = dialog1.FileName;
+                cryptor.GetOpts().FilePath = dialog1.FileName;
                 label12.Text = dialog1.FileName;
             }
         }
@@ -90,15 +88,13 @@ namespace Szyfrator
             }
             cryptor.GetOpts().Mode =listBox2.SelectedIndex;
             cryptor.GetOpts().ForEncryption = true;
-            cryptor.GetOpts().File = label12.Text;
-
+            cryptor.GetOpts().FilePath = label12.Text;
+            cryptor.GetOpts().Users = new List<User>();
 
             if (listBox1.SelectedIndex == 0) cryptor.GetOpts().KeySize = 128;
             if (listBox1.SelectedIndex == 1) cryptor.GetOpts().KeySize = 192;
             if (listBox1.SelectedIndex == 2) cryptor.GetOpts().KeySize = 256;
             cryptor.GetOpts().Mode = listBox2.SelectedIndex;
-
-            cryptor.GetOpts().Content = ReadByteArrayFromFile(cryptor.GetOpts().File);
             for (int kk = 0; kk < lines; kk++)
             {
                 if (checkedListBox1.GetItemChecked(kk))
@@ -106,10 +102,17 @@ namespace Szyfrator
                     cryptor.GetOpts().AddUser(names[kk], publicKeyPath[kk],privateKeyPath[kk]);
                 }
             }
+            string message = cryptor.GetOpts().Validate();
+            if (message.CompareTo("OK") != 0)
+            {
+                MessageBox.Show(message);
+                return;
+            }
+            cryptor.GetOpts().Content = ReadByteArrayFromFile(cryptor.GetOpts().FilePath);
             SaveFileDialog dialog2 = new SaveFileDialog();
             dialog2.Title = "Save encrypted file";
             dialog2.InitialDirectory = @"C:\";
-            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().File)))
+            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().FilePath)))
             {
                 int j = cryptor.GetOpts().Mode;
                 string cipherMode = "";
@@ -126,12 +129,14 @@ namespace Szyfrator
                     default: break;
                 }
                 cryptor.GetOpts().SessionKey = cryptor.GenerateSessionKey(cryptor.GetOpts().KeySize);
+             
                 cryptor.Encrypt();
 
                 byte[] initVec = cryptor.GetOpts().InitialVector;
                 string destination = dialog2.FileName;
 
                 SaveAsXml(cryptor, cipherMode, destination);
+                
             }
             else MessageBox.Show("Path not valid");
         }
@@ -195,7 +200,7 @@ namespace Szyfrator
             dialog1.InitialDirectory = @"C:\";
             if (dialog1.ShowDialog() == DialogResult.OK)
             {
-                cryptor.GetOpts().File = dialog1.FileName;
+                cryptor.GetOpts().FilePath = dialog1.FileName;
                 label13.Text = dialog1.FileName;
             }
         }
@@ -204,16 +209,24 @@ namespace Szyfrator
         {
             cryptor.GetOpts().ForEncryption = false;
             cryptor.GetOpts().Password = textBox4.Text;
-            cryptor.GetOpts().File = label13.Text;
+            cryptor.GetOpts().FilePath = label13.Text;
             SaveFileDialog dialog2 = new SaveFileDialog();
             dialog2.Title = "Save decrypted file as";
             dialog2.InitialDirectory = @"C:\";
             cryptor.GetOpts().Users = new List<User>();
             int kk = listBox4.SelectedIndex;
+            if (kk<0) kk = 0;
             cryptor.GetOpts().AddUser(names[kk], publicKeyPath[kk], privateKeyPath[kk]);
-            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().File)))
+            string message = cryptor.GetOpts().Validate();
+            if (message.CompareTo("OK") != 0)
             {
-                string source = cryptor.GetOpts().File;
+                MessageBox.Show(message);
+                return;
+            }
+            if ((dialog2.ShowDialog() == DialogResult.OK) && (!dialog2.FileName.Equals(cryptor.GetOpts().FilePath)))
+            {
+                string source = cryptor.GetOpts().FilePath;
+                
                 int success = readFromXml(cryptor, source);
                 if (success == 0)
                 {
@@ -221,7 +234,7 @@ namespace Szyfrator
                     bool enc = WriteByteArrayToFile(cryptor.GetOpts().Content, dialog2.FileName);
                     MessageBox.Show("File decrypted");
                 }
-                else 
+                else
                     MessageBox.Show("Encountered exception while trying to decrypt file.");
             }
             else MessageBox.Show("Path not valid");
@@ -251,7 +264,7 @@ namespace Szyfrator
                         cryptor.GetOpts().SubBlockSize = Convert.ToInt32(z);
                         reader.ReadEndElement();
                     }
-                    catch (Exception ee)
+                    catch (Exception)
                     {
                     }
                     reader.ReadStartElement("CipherMode");
@@ -298,7 +311,7 @@ namespace Szyfrator
                             reader.ReadEndElement();
                             reader.ReadEndElement();
                         }
-                        catch (Exception E)
+                        catch (Exception)
                         {
                             usersInXml = 0;
                         }
@@ -317,7 +330,7 @@ namespace Szyfrator
                     reader.ReadEndElement();
                     return 0;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return 1;
                 }
@@ -333,7 +346,7 @@ namespace Szyfrator
                 readerTwo.ReadEndElement();
 
                 byte[] encPrivKey = Convert.FromBase64String(privKey);
-                Options optss = new Options();
+                CryptOptions optss = new CryptOptions();
                 optss.KeySize = 256;
                 optss.Mode = 0;
                 optss.BlockSize = 128;
@@ -353,7 +366,7 @@ namespace Szyfrator
                     byte[] sessionKey = cryptor.RsaDecrypt(encrCont, privateKey);
                     cryptor.GetOpts().SessionKey = sessionKey;
                 }
-                catch (Exception eee) { }
+                catch (Exception) { }
             }
         }
 
@@ -384,7 +397,7 @@ namespace Szyfrator
                     response = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                
             }
@@ -419,13 +432,18 @@ namespace Szyfrator
 
         private void button7_Click(object sender, EventArgs e)
         {
+            String password = textBox2.Text;
+            if (password.Length == 0 || label18.Text.Length == 0 || label17.Text.Length == 0)
+            {
+                MessageBox.Show("Paths or password not specified");
+                return;
+            }
             names[lines] = textBox1.Text;
             publicKeyPath[lines] = tmpPublic;
             privateKeyPath[lines] = tmpPrivate;
             checkedListBox1.Items.Insert(lines, names[lines]);
             listBox4.Items.Insert(lines, names[lines]);
             lines++;
-            String password = textBox2.Text;
             AsymmetricCipherKeyPair keys = cryptor.GenerateKeys(512);
             using (StreamWriter writer = new StreamWriter(tmpPublic))
             {
@@ -439,7 +457,7 @@ namespace Szyfrator
                 RsaPrivateCrtKeyParameters key = (RsaPrivateCrtKeyParameters)keys.Private;
                 PrivateKeyInfo privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(key);
         	    byte[] serializedPrivateBytes = privateKeyInfo.ToAsn1Object().GetDerEncoded(); 
-                Options optss = new Options();
+                CryptOptions optss = new CryptOptions();
                 optss.KeySize = 256;
                 optss.Mode = 0;
                 optss.BlockSize = 128;

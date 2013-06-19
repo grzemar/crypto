@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Szyfrator
 {
-    public class Options
+    public class CryptOptions
     {
         public bool ForEncryption { get; set;}
 
-        public String File { get; set; }
+        public String FilePath { get; set; }
 
         public String Password { get; set; }
 
@@ -21,8 +21,6 @@ namespace Szyfrator
         public int BlockSize { get; set; }
 
         public int SubBlockSize { get; set; }
-
-        public String StoredFileName { get; set; }
 
         public byte[] InitialVector { get; set; }
 
@@ -36,17 +34,16 @@ namespace Szyfrator
 
         public List<User> Users { get; set; }
 
-        public Options()
+        public CryptOptions()
         {
             Users = new List<User>();
             ForEncryption = true;
             Password = null;
-            File = null;
+            FilePath = null;
             Mode = 0;
             KeySize = 128;
             BlockSize = 128;
             SubBlockSize = 8;
-            StoredFileName = null;
             InitialVector = null;
             EncryptedContent = null;
             SessionKey = null;
@@ -59,5 +56,36 @@ namespace Szyfrator
             Users.Add(new User(name,pubPath,privPath));
         }
 
+        public string Validate()
+        {
+            StringBuilder message = new StringBuilder();
+            bool isValid = true;
+            if (FilePath == null || !File.Exists(FilePath))
+            {
+                message.Append("specify file path\n");
+                isValid = false;
+            }
+            if (ForEncryption == true && Users.Count < 1)
+            {
+                message.Append("grant privileges to file to users\n");
+                isValid = false;
+            }
+
+            if (ForEncryption == false && Users.Count != 1)
+            {
+                message.Append("select user to access file\n");
+                isValid = false;
+            }
+            foreach (User u in Users)
+                if (u.IsValid() == false)
+                {
+                    message.Append("some user keys paths are broken, fix config file");
+                    isValid = false;
+                    break;
+                }
+            
+            if (isValid == true) return "OK";
+            return message.ToString();
+        }
     }
 }

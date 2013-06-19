@@ -17,12 +17,12 @@ namespace Szyfrator
 {
     public class Crypt
     {
-        private Options opts;
+        private CryptOptions opts;
 
-	    public Crypt(Options opts) {
+	    public Crypt(CryptOptions opts) {
 		    this.opts = opts;
 	    }
-        public Options GetOpts()
+        public CryptOptions GetOpts()
         {
             return opts;
         }
@@ -36,7 +36,7 @@ namespace Szyfrator
                 BufferedBlockCipher cipher = PrepareCipher(true);
                 output = ProcessCipher(cipher, opts.Content);
             }
-            catch (InvalidCipherTextException e)
+            catch (InvalidCipherTextException)
             {
                 BufferedBlockCipher cipher = PrepareCipher(false);
                 output = ProcessCipher(cipher, opts.Content);
@@ -52,7 +52,7 @@ namespace Szyfrator
 			    BufferedBlockCipher cipher = PrepareCipher(true);
 			    output = ProcessCipher(cipher, opts.EncryptedContent);
 		    } 
-            catch (InvalidCipherTextException e) 
+            catch (InvalidCipherTextException) 
             {
 			    BufferedBlockCipher cipher = PrepareCipher(false);
 			    output = ProcessCipher(cipher, opts.EncryptedContent);

@@ -7,12 +7,3 @@ D:\uczelniane resztki\sem6\bezpieczeństwo systemów komputerowych\Szyfrator\Szy
 D:\uczelniane resztki\sem6\bezpieczeństwo systemów komputerowych\Szyfrator\Szyfrator\obj\Release\Szyfrator.csproj.GenerateResource.Cache
 D:\uczelniane resztki\sem6\bezpieczeństwo systemów komputerowych\Szyfrator\Szyfrator\obj\Release\Szyfrator.exe
 D:\uczelniane resztki\sem6\bezpieczeństwo systemów komputerowych\Szyfrator\Szyfrator\obj\Release\Szyfrator.pdb
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\Szyfrator.exe
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\Szyfrator.pdb
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\ResolveAssemblyReference.cache
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\Szyfrator.Form1.resources
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\Szyfrator.Properties.Resources.resources
-D:\git\crypto\crypto\Szyfrator\Szyfrator\obj\Release\Szyfrator.csproj.GenerateResource.Cache
-D:\git\crypto\crypto\Szyfrator\Szyfrator\bin\Release\Szyfrator.exe
-D:\git\crypto\crypto\Szyfrator\Szyfrator\bin\Release\Szyfrator.pdb
-D:\git\crypto\crypto\Szyfrator\Szyfrator\bin\Release\BouncyCastle.CryptoExt.dll

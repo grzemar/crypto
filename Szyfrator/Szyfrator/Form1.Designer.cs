@@ -54,6 +54,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button7 = new System.Windows.Forms.Button();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -64,8 +65,8 @@
             this.button5 = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.button7 = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -85,6 +86,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label19);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.checkedListBox1);
             this.tabPage1.Controls.Add(this.listBox3);
@@ -104,7 +106,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(576, 236);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Szyfrowanie";
+            this.tabPage1.Text = "Encryption";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // label12
@@ -118,7 +120,7 @@
             // checkedListBox1
             // 
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(283, 136);
+            this.checkedListBox1.Location = new System.Drawing.Point(416, 135);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(120, 49);
             this.checkedListBox1.TabIndex = 15;
@@ -127,10 +129,10 @@
             // 
             this.listBox3.FormattingEnabled = true;
             this.listBox3.Items.AddRange(new object[] {
-            "8 bitów",
-            "16 bitów",
-            "32 bity",
-            "64 bity"});
+            "8 bits",
+            "16 bits",
+            "32 bits",
+            "64 bits"});
             this.listBox3.Location = new System.Drawing.Point(416, 102);
             this.listBox3.Name = "listBox3";
             this.listBox3.Size = new System.Drawing.Size(120, 17);
@@ -141,9 +143,9 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(280, 108);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(95, 13);
+            this.label11.Size = new System.Drawing.Size(73, 13);
             this.label11.TabIndex = 13;
-            this.label11.Text = "Długość podbloku";
+            this.label11.Text = "Subblock size";
             // 
             // button2
             // 
@@ -151,7 +153,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(222, 23);
             this.button2.TabIndex = 12;
-            this.button2.Text = "Zapisz plik jako...";
+            this.button2.Text = "Encrypt and save file as..";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -172,9 +174,9 @@
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Items.AddRange(new object[] {
-            "128 bitów",
-            "192 bity",
-            "256 bitów"});
+            "128 bits",
+            "192 bits",
+            "256 bits"});
             this.listBox1.Location = new System.Drawing.Point(148, 136);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(100, 17);
@@ -185,53 +187,53 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(148, 102);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 13);
+            this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 9;
-            this.label7.Text = "128 bitów";
+            this.label7.Text = "128 bits";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(23, 171);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 7;
-            this.label6.Text = "Tryb";
+            this.label6.Text = "Mode";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(23, 140);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(82, 13);
+            this.label5.Size = new System.Drawing.Size(46, 13);
             this.label5.TabIndex = 6;
-            this.label5.Text = "Długość klucza";
+            this.label5.Text = "Key size";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(23, 102);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
+            this.label4.Size = new System.Drawing.Size(55, 13);
             this.label4.TabIndex = 5;
-            this.label4.Text = "Długość bloku";
+            this.label4.Text = "Block size";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(23, 53);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
+            this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Ustawienia";
+            this.label2.Text = "Settings";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(283, 43);
+            this.button1.Location = new System.Drawing.Point(283, 16);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(97, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "Wybierz plik";
+            this.button1.Text = "Choose file..";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -240,12 +242,13 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(22, 21);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(108, 13);
+            this.label1.Size = new System.Drawing.Size(73, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Plik do zaszyfrowania";
+            this.label1.Text = "File to encrypt";
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label20);
             this.tabPage2.Controls.Add(this.listBox4);
             this.tabPage2.Controls.Add(this.label13);
             this.tabPage2.Controls.Add(this.button4);
@@ -259,13 +262,13 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(576, 236);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Odszyfrowywanie";
+            this.tabPage2.Text = "Decryption";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // listBox4
             // 
             this.listBox4.FormattingEnabled = true;
-            this.listBox4.Location = new System.Drawing.Point(282, 76);
+            this.listBox4.Location = new System.Drawing.Point(367, 76);
             this.listBox4.Name = "listBox4";
             this.listBox4.Size = new System.Drawing.Size(120, 30);
             this.listBox4.TabIndex = 8;
@@ -284,13 +287,13 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(206, 23);
             this.button4.TabIndex = 6;
-            this.button4.Text = "Zapisz plik jako...";
+            this.button4.Text = "Decrypt and save decrypted file as..";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(149, 76);
+            this.textBox4.Location = new System.Drawing.Point(133, 76);
             this.textBox4.Name = "textBox4";
             this.textBox4.PasswordChar = '*';
             this.textBox4.Size = new System.Drawing.Size(100, 20);
@@ -301,26 +304,26 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(24, 83);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(36, 13);
+            this.label10.Size = new System.Drawing.Size(53, 13);
             this.label10.TabIndex = 4;
-            this.label10.Text = "Hasło";
+            this.label10.Text = "Password";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(24, 54);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(59, 13);
+            this.label9.Size = new System.Drawing.Size(45, 13);
             this.label9.TabIndex = 3;
-            this.label9.Text = "Ustawienia";
+            this.label9.Text = "Settings";
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(282, 44);
+            this.button3.Location = new System.Drawing.Point(282, 11);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(178, 23);
             this.button3.TabIndex = 2;
-            this.button3.Text = "Wybierz plik";
+            this.button3.Text = "Choose encrypted file to decrypt..";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -329,9 +332,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(24, 21);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(104, 13);
+            this.label8.Size = new System.Drawing.Size(71, 13);
             this.label8.TabIndex = 0;
-            this.label8.Text = "Plik odszyfrowywany";
+            this.label8.Text = "Encrypted file";
             // 
             // tabPage3
             // 
@@ -351,8 +354,18 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(576, 236);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Generowanie kluczy";
+            this.tabPage3.Text = "Add account";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(36, 169);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 10;
+            this.button7.Text = "Generate keys..";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label18
             // 
@@ -375,9 +388,9 @@
             this.label16.AutoSize = true;
             this.label16.Location = new System.Drawing.Point(33, 142);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(128, 13);
+            this.label16.Size = new System.Drawing.Size(108, 13);
             this.label16.TabIndex = 7;
-            this.label16.Text = "Hasło klucza prywatnego";
+            this.label16.Text = "Private key password";
             // 
             // textBox2
             // 
@@ -392,9 +405,9 @@
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(33, 21);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(40, 13);
+            this.label15.Size = new System.Drawing.Size(35, 13);
             this.label15.TabIndex = 5;
-            this.label15.Text = "Nazwa";
+            this.label15.Text = "Name";
             // 
             // textBox1
             // 
@@ -409,7 +422,7 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(176, 23);
             this.button6.TabIndex = 3;
-            this.button6.Text = "Klucz prywatny";
+            this.button6.Text = "Private key path..";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -419,7 +432,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(176, 23);
             this.button5.TabIndex = 2;
-            this.button5.Text = "Klucz publiczny";
+            this.button5.Text = "Public key path..";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -439,23 +452,23 @@
             this.label3.Size = new System.Drawing.Size(0, 13);
             this.label3.TabIndex = 0;
             // 
-            // menuStrip1
+            // label19
             // 
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(608, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(280, 140);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(113, 13);
+            this.label19.TabIndex = 17;
+            this.label19.Text = "Grant access to file to:\r\n";
             // 
-            // button7
+            // label20
             // 
-            this.button7.Location = new System.Drawing.Point(36, 169);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 10;
-            this.button7.Text = "Generuj";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(282, 76);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(79, 13);
+            this.label20.TabIndex = 9;
+            this.label20.Text = "Select account";
             // 
             // Form1
             // 
@@ -463,10 +476,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 312);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Rc6";
+            this.Text = "Simple file encryption";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -475,7 +486,6 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -496,7 +506,6 @@
         private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox4;
@@ -519,6 +528,8 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label20;
 
 
     }
