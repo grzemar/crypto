@@ -30,6 +30,7 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label19 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.listBox3 = new System.Windows.Forms.ListBox();
@@ -45,6 +46,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
             this.listBox4 = new System.Windows.Forms.ListBox();
             this.label13 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
@@ -65,8 +67,6 @@
             this.button5 = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -108,6 +108,15 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Encryption";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(280, 140);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(113, 13);
+            this.label19.TabIndex = 17;
+            this.label19.Text = "Grant access to file to:\r\n";
             // 
             // label12
             // 
@@ -229,7 +238,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(283, 16);
+            this.button1.Location = new System.Drawing.Point(122, 43);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(97, 23);
             this.button1.TabIndex = 2;
@@ -264,6 +273,15 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Decryption";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(282, 76);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(79, 13);
+            this.label20.TabIndex = 9;
+            this.label20.Text = "Select account";
             // 
             // listBox4
             // 
@@ -319,7 +337,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(282, 11);
+            this.button3.Location = new System.Drawing.Point(111, 44);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(178, 23);
             this.button3.TabIndex = 2;
@@ -451,24 +469,6 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(0, 13);
             this.label3.TabIndex = 0;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(280, 140);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(113, 13);
-            this.label19.TabIndex = 17;
-            this.label19.Text = "Grant access to file to:\r\n";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(282, 76);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(79, 13);
-            this.label20.TabIndex = 9;
-            this.label20.Text = "Select account";
             // 
             // Form1
             // 

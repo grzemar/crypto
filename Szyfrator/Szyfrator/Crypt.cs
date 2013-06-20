@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Engines;
@@ -17,31 +13,31 @@ namespace Szyfrator
 {
     public class Crypt
     {
-        private CryptOptions opts;
+        private CryptOptions options;
 
 	    public Crypt(CryptOptions opts) {
-		    this.opts = opts;
+		    this.options = opts;
 	    }
         public CryptOptions GetOpts()
         {
-            return opts;
+            return options;
         }
 
         public void Encrypt()
         {
-            opts.InitialVector = GenerateInitialVector();
+            options.InitialVector = GenerateInitialVector();
             byte[] output;
             try
             {
-                BufferedBlockCipher cipher = PrepareCipher(true);
-                output = ProcessCipher(cipher, opts.Content);
+                BufferedBlockCipher cipher = SetCipherOptions(true);
+                output = PerformCipherOperations(cipher, options.Content);
             }
             catch (InvalidCipherTextException)
             {
-                BufferedBlockCipher cipher = PrepareCipher(false);
-                output = ProcessCipher(cipher, opts.Content);
+                BufferedBlockCipher cipher = SetCipherOptions(false);
+                output = PerformCipherOperations(cipher, options.Content);
             }
-            opts.EncryptedContent = output;
+            options.EncryptedContent = output;
         }
 
         public void Decrypt()
@@ -49,15 +45,15 @@ namespace Szyfrator
             byte[] output;
 		    try 
             {
-			    BufferedBlockCipher cipher = PrepareCipher(true);
-			    output = ProcessCipher(cipher, opts.EncryptedContent);
+			    BufferedBlockCipher cipher = SetCipherOptions(true);
+			    output = PerformCipherOperations(cipher, options.EncryptedContent);
 		    } 
             catch (InvalidCipherTextException) 
             {
-			    BufferedBlockCipher cipher = PrepareCipher(false);
-			    output = ProcessCipher(cipher, opts.EncryptedContent);
+			    BufferedBlockCipher cipher = SetCipherOptions(false);
+			    output = PerformCipherOperations(cipher, options.EncryptedContent);
 		    }
-            opts.Content = output;
+            options.Content = output;
         }
 
         public AsymmetricCipherKeyPair GenerateKeys(int keySizeInBits)
@@ -111,7 +107,7 @@ namespace Szyfrator
 	    public byte[] GenerateInitialVector() 
         {
 		    Random random = new SecureRandom();
-		    byte[] iv = new byte[opts.BlockSize/8];
+		    byte[] iv = new byte[options.BlockSize/8];
 		    random.NextBytes(iv);
 		    return iv;
 	    }
@@ -125,11 +121,11 @@ namespace Szyfrator
             return result;
         }
 
-        public BufferedBlockCipher PrepareCipher(bool padded)
+        public BufferedBlockCipher SetCipherOptions(bool padded)
         {
             IBlockCipher engine = new RC6Engine();
 		    IBlockCipher mode;
-		    switch (opts.Mode) 
+		    switch (options.Mode) 
             {
 			    case 0:
 				    mode = engine;
@@ -138,10 +134,10 @@ namespace Szyfrator
 				    mode = new CbcBlockCipher(engine);
 				    break;
 			    case 2:
-				    mode = new CfbBlockCipher(engine, opts.SubBlockSize);
+				    mode = new CfbBlockCipher(engine, options.SubBlockSize);
 				    break;
 			    case 3:
-				    mode = new OfbBlockCipher(engine, opts.SubBlockSize);
+				    mode = new OfbBlockCipher(engine, options.SubBlockSize);
 				    break;
 			    default:
 				    mode = engine;
@@ -158,30 +154,30 @@ namespace Szyfrator
 			    cipher = new BufferedBlockCipher(mode);
 		    }
 
-		    KeyParameter keyParameter = new KeyParameter(opts.SessionKey);
-		    if (opts.Mode == 0) 
+		    KeyParameter keyParameter = new KeyParameter(options.SessionKey);
+		    if (options.Mode == 0) 
             {
-			    cipher.Init(opts.ForEncryption, keyParameter);
+			    cipher.Init(options.ForEncryption, keyParameter);
 		    } 
             else 
             {
-			    ParametersWithIV keyAndIVParameter = new ParametersWithIV(keyParameter, opts.InitialVector);
-			    cipher.Init(opts.ForEncryption, keyAndIVParameter);
+			    ParametersWithIV keyAndIVParameter = new ParametersWithIV(keyParameter, options.InitialVector);
+			    cipher.Init(options.ForEncryption, keyAndIVParameter);
 		    }
 
 		    return cipher;
         }
 
-        public byte[] ProcessCipher(BufferedBlockCipher cipher, byte[] input)
+        public byte[] PerformCipherOperations(BufferedBlockCipher cipher, byte[] input)
         {
             byte[] output = new byte[cipher.GetOutputSize(input.Length)];
-		    int outputLen = cipher.ProcessBytes(input, 0, input.Length, output, 0);
-		    outputLen += cipher.DoFinal(output, outputLen);
+		    int outputLength = cipher.ProcessBytes(input, 0, input.Length, output, 0);
+		    outputLength += cipher.DoFinal(output, outputLength);
 
-		    if (outputLen != output.Length) {
-			    byte[] exactOutput = new byte[outputLen];
-			    System.Array.Copy(output, 0, exactOutput, 0, outputLen);
-			    return exactOutput;
+		    if (outputLength != output.Length) {
+			    byte[] finalOutput = new byte[outputLength];
+			    System.Array.Copy(output, 0, finalOutput, 0, outputLength);
+			    return finalOutput;
 		    }
 
 		    return output;

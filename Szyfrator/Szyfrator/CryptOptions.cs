@@ -8,6 +8,8 @@ namespace Szyfrator
 {
     public class CryptOptions
     {
+        const long MAX_FILE_SIZE = 20000000;
+
         public bool ForEncryption { get; set;}
 
         public String FilePath { get; set; }
@@ -64,6 +66,16 @@ namespace Szyfrator
             {
                 message.Append("specify file path\n");
                 isValid = false;
+            }
+            else
+            {
+                FileInfo info = new FileInfo(FilePath);
+                long len = info.Length;
+                if (len > MAX_FILE_SIZE)
+                {
+                    isValid = false;
+                    message.Append("file too large, choose another\n");
+                }
             }
             if (ForEncryption == true && Users.Count < 1)
             {

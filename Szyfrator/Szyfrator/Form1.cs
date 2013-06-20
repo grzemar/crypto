@@ -1,14 +1,14 @@
-﻿using System;
+﻿/*Author: grzemar
+ * 
+ * Program for encryption and decryption of small files *
+ */
+
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Windows.Forms;
-using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Pkcs;
@@ -16,14 +16,15 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.OpenSsl;
 
 namespace Szyfrator
 {
+    /* Main form
+     */
     public partial class Form1 : Form
     {
         private Crypt cryptor;
-        private const string config = "Resources\\keys.csv";
+        private const string CONFIG = "Resources\\keys.csv";
         private string[] names = new string[50];
         private string[] publicKeyPath = new string[50];
         private string[] privateKeyPath = new string[50];
@@ -37,7 +38,7 @@ namespace Szyfrator
             cryptor = new Crypt(opts);
             try
             {
-                using (StreamReader readFile = new StreamReader(config))
+                using (StreamReader readFile = new StreamReader(CONFIG))
                 {
                     string row;
                     string[] column;
@@ -486,7 +487,7 @@ namespace Szyfrator
                 writer.WriteLine();
                 writer.Close();
             }
-            MessageBox.Show("RSA key pair created");
+            MessageBox.Show("Account created");
         }
     }
 }
